@@ -1,0 +1,158 @@
+# Student Management System 
+
+import csv
+
+fields  = ['ID NUMBER', 'First Name', 'Last Name', 'Year Level', 'Course', 'Gender']
+storage = 'studentsrecord.csv'
+
+
+def add_new():
+    print("-------------------------")
+    print("    Add New Student")
+    print("-------------------------")
+
+    new_student = []
+    for field in fields:
+        data = input("Enter " + field + ": ")
+        new_student.append(data)
+
+    with open(storage, "a", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerows([new_student])
+
+    print(new_student[1] + ' ' + new_student[2] + " added successfully.")
+    input("Press any key to continue")
+    return
+
+
+def viewall_students():
+    print("--- Student Records ---")
+
+    with open(storage, "r", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for student in fields:
+            print(student, end='\t |')
+        print("\n-----------------------------------------------------------------")
+
+        for row in reader:
+            for item in row:
+                print(item, end="\t |")
+            print("\n")
+
+    input("Press any key to continue")
+
+
+def search_student():
+    print("--- Search Student ---")
+    roll = input("Enter ID NUMBER: ")
+    with open(storage, "r", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if len(row) > 0:
+                if roll == row[0]:
+                    print("----- Student Found -----")
+                    print("ID: "+ row[0])
+                    print("First Name: "+ row[1])
+                    print("Last Name: "+ row[2])
+                    print("Year Level: "+ row[3])
+                    print("Gender: "+ row[4])
+                    print("Course: "+ row[5])
+                    break
+        else:
+            print("No such student found.")
+    input("Press any key to continue")
+
+
+def update_student():
+    print("--- Update Student ---")
+    key = input("Enter ID NUMBER to update: ")
+    index = None
+    update = []
+    with open(storage, "r", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        count = 0
+        for row in reader:
+            if len(row) > 0:
+                if key == row[0]:
+                    index = count
+                    print("Student Found at index ", index)
+                    student_data = []
+                    for field in fields:
+                        value = input("Enter " + field + ": ")
+                        student_data.append(value)
+                    update.append(student_data)
+                else:
+                    update.append(row)
+                count += 1
+
+
+    # Checking the existence of an ID
+    if index is not None:
+        with open(storage, "w", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(update)
+    else:
+        print(str(key) + " not found in our database.")
+
+    input("Press any key to continue")
+
+
+def delete_student():
+    print("--- Delete Student ---")
+    key = input("Enter ID NUMBER to delete: ")
+    student_found = False
+    new_data = []
+    with open(storage, "r", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        counter = 0
+        for row in reader:
+            if len(row) > 0:
+                if key != row[0]:
+                    new_data.append(row)
+                    counter += 1
+                else:
+                    student_found = True
+
+    if student_found is True:
+        with open(storage, "w", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerows(new_data)
+        print("ID NUMBER ", key, "deleted successfully")
+    else:
+        print("ID NUMBER not found in our database")
+
+    input("Press any key to continue")
+
+
+def exit_program():
+    print("--------------------------------")
+    print(" Thank you for using our system!")
+    print("--------------------------------")
+
+
+
+while True:
+    print("--------------------------------------")
+    print(" Welcome to Student Management System")
+    print("---------------------------------------")
+    print("1. Add New Student")
+    print("2. View All Students")
+    print("3. Search Student")
+    print("4. Update Student")
+    print("5. Delete Student")
+    print("6. Exit")
+
+    num = input("Enter the corresponding number of your choice: ")
+    if num == '1':
+        add_new()
+    elif num == '2':
+        viewall_students()
+    elif num == '3':
+        search_student()
+    elif num == '4':
+        update_student()
+    elif num == '5':
+        delete_student()
+    elif num == '6':
+        exit_program()
+        break
